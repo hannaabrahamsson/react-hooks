@@ -5,7 +5,14 @@ import * as React from 'react'
 
 const Board = () => {
   // 🐨 squares is the state for this component. Add useState for squares
-  const [squares, setSquares] = React.useState(Array(9).fill(null))
+
+  const stickySquares = JSON.parse(window.localStorage.getItem('squares'));
+
+  const [squares, setSquares] = React.useState(() => stickySquares || Array(9).fill(null))
+
+  React.useEffect(() => {
+    window.localStorage.setItem('squares', JSON.stringify(squares));
+  }, [squares]);
 
   // 🐨 We'll need the following bits of derived state:
   // - nextValue ('X' or 'O')
