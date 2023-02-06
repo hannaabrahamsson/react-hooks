@@ -3,9 +3,9 @@
 
 import * as React from 'react'
 
-function Board() {
+const Board = () => {
   // 🐨 squares is the state for this component. Add useState for squares
-  const squares = Array(9).fill(null)
+  const [squares, setSquares] = React.useState(Array(9).fill(null))
 
   // 🐨 We'll need the following bits of derived state:
   // - nextValue ('X' or 'O')
@@ -14,9 +14,17 @@ function Board() {
   // 💰 I've written the calculations for you! So you can use my utilities
   // below to create these variables
 
+  const nextValue = calculateNextValue(squares);
+
+  const winner = calculateWinner(squares);
+
+  const status = calculateStatus(winner, squares, nextValue);
+
+  //   
+
   // This is the function your square click handler will call. `square` should
   // be an index. So if they click the center square, this will be `4`.
-  function selectSquare(square) {
+  const selectSquare = (square) => {
     // 🐨 first, if there's already winner or there's already a value at the
     // given square index (like someone clicked a square that's already been
     // clicked), then return early so we don't make any state changes
@@ -31,14 +39,23 @@ function Board() {
     // 💰 `squaresCopy[square] = nextValue`
     //
     // 🐨 set the squares to your copy
+
+    if (winner || squares[square]) {
+      return
+    }
+
+    const squaresCopy = [...squares];
+    squaresCopy[square] = nextValue;
+    setSquares(squaresCopy)
   }
 
-  function restart() {
+  const restart = () => {
     // 🐨 reset the squares
     // 💰 `Array(9).fill(null)` will do it!
+    setSquares(Array(9).fill(null));
   }
 
-  function renderSquare(i) {
+  const renderSquare = (i) => {
     return (
       <button className="square" onClick={() => selectSquare(i)}>
         {squares[i]}
@@ -49,7 +66,7 @@ function Board() {
   return (
     <div>
       {/* 🐨 put the status in the div below */}
-      <div className="status">STATUS</div>
+      <div className="status">{status}</div>
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}
@@ -72,7 +89,7 @@ function Board() {
   )
 }
 
-function Game() {
+const Game = () => {
   return (
     <div className="game">
       <div className="game-board">
@@ -83,7 +100,7 @@ function Game() {
 }
 
 // eslint-disable-next-line no-unused-vars
-function calculateStatus(winner, squares, nextValue) {
+const calculateStatus = (winner, squares, nextValue) => {
   return winner
     ? `Winner: ${winner}`
     : squares.every(Boolean)
@@ -92,12 +109,12 @@ function calculateStatus(winner, squares, nextValue) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function calculateNextValue(squares) {
+const calculateNextValue = (squares) => {
   return squares.filter(Boolean).length % 2 === 0 ? 'X' : 'O'
 }
 
 // eslint-disable-next-line no-unused-vars
-function calculateWinner(squares) {
+const calculateWinner = (squares) => {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -117,7 +134,7 @@ function calculateWinner(squares) {
   return null
 }
 
-function App() {
+const App = () => {
   return <Game />
 }
 
